@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/ThomasAndrewMacLean/express/issues"
   },
+  "dependencies": {
+    "express": "latest",
+    "request": "latest"
+  },
   "homepage": "https://github.com/ThomasAndrewMacLean/express#readme"
 }
