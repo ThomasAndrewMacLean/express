@@ -18,7 +18,11 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-
+app.copy('/', (req, res, next) => {
+    res.status(200).json({
+        'message': 'test'
+    })
+})
 
 
 app.get('/:productId', (req, res, next) => {
