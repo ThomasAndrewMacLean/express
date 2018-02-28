@@ -21,8 +21,8 @@ module.exports = function (app, passport) {
         failureFlash: true
     }));
     app.post('/login', passport.authenticate('local-login', {
-        successRedirect: '/profile',
-        failureRedirect: '/login',
+        successRedirect: '/',
+        failureRedirect: '/error',
         failureFlash: true
     }));
 
