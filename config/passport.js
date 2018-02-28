@@ -3,9 +3,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const User = require('../app/models/user');
 
 module.exports = (passport) => {
-
-    console.log('start');
-
     passport.serializeUser((user, done) => {
         done(null, user.id);
     });
@@ -21,9 +18,7 @@ module.exports = (passport) => {
         usernameField: 'email',
         passwordField: 'password',
         passReqToCallback: true
-    },
-    (req, email, password, done) => {
-        console.log('ok');
+    }, (req, email, password, done) => {
         process.nextTick(() => {
             User.findOne({
                 'local.email': email
@@ -36,12 +31,8 @@ module.exports = (passport) => {
                 }
 
                 if (user) {
-                    console.log(user);
-
                     return done(null, false, req.flash('signup', 'email is already taken.'));
                 } else {
-                    console.log(email);
-
                     let newUser = new User();
                     newUser.local.email = email;
                     newUser.local.password = newUser.generateHash(password);
@@ -55,5 +46,26 @@ module.exports = (passport) => {
                 }
             });
         });
+    }));
+
+    passport.use('local-login', new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    }, (req, email, password, done) => {
+
+
+        User.findOne({
+            'local.email': email
+        }, (err, user) => {
+            if (err)
+                return done(err);
+            if (!user)
+                return done(null, false, req.flash('loginMessage', 'No user found.'));
+            if (!user.validPassword(password))
+                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+            return done(null, user);
+        });
+
     }));
 };
