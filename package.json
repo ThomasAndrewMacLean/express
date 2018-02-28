@@ -16,7 +16,10 @@
     "url": "https://github.com/ThomasAndrewMacLean/express/issues"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "latest",
+    "mongoose": "^5.0.7",
+    "morgan": "^1.9.0",
     "request": "latest"
   },
   "homepage": "https://github.com/ThomasAndrewMacLean/express#readme"
