@@ -1,18 +1,40 @@
+const jwt = require('jsonwebtoken');
 module.exports = function (app, passport) {
 
     app.get('/', (req, res) => {
-        res.status(200).json('test');
+
+        // console.log(req);
+
+        console.log('ok!');
+
+        res.status(200).json(req.flash());
     });
 
     app.get('/error', (req, res) => {
 
-        console.log(req.sessionStore);
+        console.log(req.flash());
 
         res.status(400).json('not good');
     });
 
     app.get('/userinfo', hasToken, (req, res) => {
-        res.status(200).json('user');
+        jwt.verify(req.token, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                console.log('err');
+
+                res.status(403).json({
+                    'err': err
+                });
+            } else {
+                console.log('succes');
+
+                res.status(200).json({
+                    text: 'allrighty',
+                    data: data
+                });
+            }
+        });
+
     });
 
     app.post('/signup', passport.authenticate('local-signup', {
@@ -29,9 +51,23 @@ module.exports = function (app, passport) {
 };
 
 function hasToken(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
+    const bearerHeader = req.headers['authorization'];
+    console.log(bearerHeader);
+
+
+    if (req.flash('jwt')) {
+        console.log(req.flash('jwt'));
+
+    }
+
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(' ');
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        console.log('ok');
+
+        next();
     } else {
-        res.status(403).json('not authenticated');
+        res.status(403).json('no token');
     }
 }
