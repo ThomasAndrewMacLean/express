@@ -3,10 +3,16 @@ module.exports = function (app, passport) {
 
     app.get('/', (req, res) => {
 
-        // console.log(req);
+        // console.log(req.flash('jwt'));
+        console.log(req.user);
 
         console.log('ok!');
-
+        res.cookie('jwt', jwt.sign({
+            user: req.user
+        }, 'megaGeheimSecret'), {
+            maxAge: 900000,
+            httpOnly: true
+        });
         res.status(200).json(req.flash());
     });
 
@@ -36,6 +42,7 @@ module.exports = function (app, passport) {
         });
 
     });
+
 
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/',

@@ -41,14 +41,8 @@ module.exports = (passport) => {
                         if (err) {
                             throw err;
                         }
-                        // req.header('authorization', 'Bearer ' + jwt.sign({
-                        //     newUser
-                        // }, 'megaGeheimSecret'));
-                        console.log('new user');
-
-                        req.flash('jwt', jwt.sign({
-                            newUser
-                        }, 'megaGeheimSecret'));
+                     
+                      
                         return done(null, newUser);
                     });
                 }
