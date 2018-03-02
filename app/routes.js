@@ -1,36 +1,33 @@
 const jwt = require('jsonwebtoken');
 module.exports = function (app, passport) {
 
-
-    // app.options('/testLogin', (req, res) => {
-    //     res.header('Access-Control-Allow-Origin', '*');
-    // });
-    // app.options('/', (req, res) => {
-    //     res.header('Access-Control-Allow-Origin', '*');
-    // });
-
-
-    app.get('/testLogin', (req, res) => {
-        const cookie = req.cookies.jwt;
+    let checkCookie = (cookie, res) => {
         jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
             if (err) {
-                //console.log('err');
-                //  res.header('Access-Control-Allow-Origin', '*');
-                res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-                // res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
                 res.status(200).json({
                     'err': err
                 });
             } else {
                 console.log('succes');
-                //    res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
                 res.status(200).json({
                     user: data.user.local.email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
                 });
             }
         });
+    };
+
+    app.get('/testLogin', (req, res) => {
+        const cookie = req.cookies.jwt;
+        checkCookie(cookie, res);
 
     });
+
+    app.post('/testLoginIOS', (req, res) => {
+        const cookie = req.body.cookie;
+        checkCookie(cookie, res);
+    });
+
+
 
     app.get('/', (req, res) => {
         let cookie = jwt.sign({
