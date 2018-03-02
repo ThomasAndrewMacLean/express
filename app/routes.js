@@ -17,13 +17,13 @@ module.exports = function (app, passport) {
                 //console.log('err');
                 //  res.header('Access-Control-Allow-Origin', '*');
                 res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-                res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
+                // res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
                 res.status(200).json({
                     'err': err
                 });
             } else {
                 console.log('succes');
-                res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
+                //    res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
                 res.status(200).json({
                     user: data.user.local.email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
                 });
@@ -48,7 +48,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/deleteCookie', (req, res) => {
-        res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
+        // res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
         res.clearCookie('jwt');
         res.status(200).json('delete');
 
