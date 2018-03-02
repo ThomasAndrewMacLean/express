@@ -22,6 +22,10 @@ module.exports = function (app, passport) {
 
     });
 
+    app.options('/testLoginIOS', (req, res) => {
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8081');
+    });
     app.post('/testLoginIOS', (req, res) => {
         const cookie = req.body.cookie;
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
