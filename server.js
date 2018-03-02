@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const passport = require('passport');
 var flash = require('connect-flash');
+const corse = require('cors');
 
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -28,6 +29,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.use(corse({
+    credentials: true
+}));
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
+    next();
+});
+
 require('./app/routes.js')(app, passport);
 
 const User = require('./app/models/user');
@@ -40,6 +50,10 @@ app.copy('/', (req, res) => {
                 'message': err
             });
         });
+});
+app.delete('/', (req, res) => {
+    User.find().remove({}).exec();
+    res.status(200).json('del');
 });
 
 const server = app.listen(process.env.PORT || 8080, () => console.log('All is ok'));

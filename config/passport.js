@@ -31,7 +31,7 @@ module.exports = (passport) => {
                 }
 
                 if (user) {
-                    return done(null, false, req.flash('signup', 'email is already taken.'));
+                    return done(null, false, req.flash('err', 'email is already taken.'));
                 } else {
                     let newUser = new User();
                     newUser.local.email = email;
@@ -41,8 +41,8 @@ module.exports = (passport) => {
                         if (err) {
                             throw err;
                         }
-                     
-                      
+
+
                         return done(null, newUser);
                     });
                 }
@@ -63,9 +63,9 @@ module.exports = (passport) => {
             if (err)
                 return done(err);
             if (!user)
-                return done(null, false, req.flash('loginMessage', 'No user found.'));
+                return done(null, false, req.flash('err', 'No user found.'));
             if (!user.validPassword(password))
-                return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                return done(null, false, req.flash('err', 'Oops! Wrong password.'));
             return done(null, user);
         });
 
