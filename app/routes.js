@@ -33,18 +33,15 @@ module.exports = function (app, passport) {
     });
 
     app.get('/', (req, res) => {
-
-        // console.log(req.flash('jwt'));
-        // console.log(req.user);
-
-        //  console.log('ok!');
-        res.cookie('jwt', jwt.sign({
+        let cookie = jwt.sign({
             user: req.user
-        }, 'megaGeheimSecret'), {
-            // maxAge: 300000,
+        }, 'megaGeheimSecret');
+        res.cookie('jwt', cookie, {
             httpOnly: true
         });
-        res.status(200).json('ok');
+        res.status(200).json({
+            'cookie': cookie
+        });
     });
 
     app.get('/deleteCookie', (req, res) => {
