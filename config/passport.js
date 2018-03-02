@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const jwt = require('jsonwebtoken');
+
 const User = require('../app/models/user');
 
 module.exports = (passport) => {

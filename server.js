@@ -42,8 +42,21 @@ app.use(function (req, res, next) {
 require('./app/routes.js')(app, passport);
 
 const User = require('./app/models/user');
+const Message = require('./app/models/msg');
+
 app.copy('/', (req, res) => {
     User.find().exec()
+        .then(docs => {
+            res.status(200).json(docs);
+        }).catch(err => {
+            res.status(500).json({
+                'message': err
+            });
+        });
+});
+
+app.copy('/msg', (req, res) => {
+    Message.find().exec()
         .then(docs => {
             res.status(200).json(docs);
         }).catch(err => {
@@ -79,6 +92,11 @@ io.on('connection', (socket) => {
 
                 let user = data.user.local.email;
                 console.log(user);
+
+                let msg = new Message();
+                msg.user = user;
+                msg.message = msgData.msg;
+                msg.save();
 
                 io.emit('return', {
                     'msg': msgData.msg,
