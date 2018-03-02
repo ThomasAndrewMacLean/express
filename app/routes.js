@@ -4,7 +4,7 @@ module.exports = function (app, passport) {
     let checkCookie = (cookie, res) => {
         jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
             if (err) {
-                res.status(400).json('fout !!!!');
+                res.status(400).json(cookie);
             } else {
                 console.log('succes');
                 res.status(200).json({
