@@ -10,6 +10,7 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
+const jwt = require('jsonwebtoken');
 
 mongoose.connect('mongodb://dbReadWrite:' + process.env.MONGO_DB_PW + '@cluster0-shard-00-00-ri0ro.mongodb.net:27017,cluster0-shard-00-01-ri0ro.mongodb.net:27017,cluster0-shard-00-02-ri0ro.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
 
@@ -65,10 +66,28 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('hi');
     //socket.emit('return', 'new user');
 
-    socket.on('test', (data) => {
-        console.log(data);
+    socket.on('send-msg', (msgData) => {
+        console.log(msgData);
 
-        io.emit('return', data + ' gijzelf!!!');
+        let cookie = msgData.cookie;
+        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                console.log('iets raars met cookie...');
+
+            } else {
+
+
+                let user = data.user.local.email;
+                console.log(user);
+
+                io.emit('return', {
+                    'msg': msgData.msg,
+                    'user': user
+                });
+
+            }
+        });
+
     });
 
 });
