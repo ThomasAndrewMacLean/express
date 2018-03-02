@@ -20,7 +20,7 @@ module.exports = function (app, passport) {
 
     });
 
-    app.options('/testLoginIOS', (req, res) => {
+    app.options('/*', (req, res) => {
         console.log(req.body);
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8081');
