@@ -77,8 +77,7 @@ var io = require('socket.io')(server);
 io.on('connection', (socket) => {
     console.log('new user');
     socket.broadcast.emit('hi');
-    //socket.emit('return', 'new user');
-
+ 
     socket.on('send-msg', (msgData) => {
         console.log(msgData);
 
