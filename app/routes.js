@@ -53,14 +53,15 @@ module.exports = function (app, passport) {
                 'cookie': cookie
             });
         } else {
-            User.findById(req._passport.session.user).then(cookie => {
-                res.cookie('jwt', cookie, {
-                    httpOnly: true
-                });
-                res.status(200).json({
-                    'cookie': cookie
-                });
-            });
+            console.log(req._passport);
+            // User.findById(req._passport.session.user).then(cookie => {
+            //     res.cookie('jwt', cookie, {
+            //         httpOnly: true
+            //     });
+            //     res.status(200).json({
+            //         'cookie': cookie
+            //     });
+            // });
         }
 
 
