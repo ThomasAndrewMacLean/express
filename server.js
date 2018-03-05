@@ -33,7 +33,7 @@ app.use(flash());
 // app.use(corse());
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8082');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With,Authorization, Content-Type, Accept');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Authorization, Range, Content-Type, Accept');
     next();
 });
 
