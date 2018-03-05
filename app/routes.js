@@ -60,13 +60,15 @@ module.exports = function (app, passport) {
                 if (req.sessionStore.sessions[sess].includes('passport'))
                     userId = JSON.parse(req.sessionStore.sessions[sess]).passport.user;
             }
-            console.log('cookie: ' + userId);
+            console.log('userId: ' + userId);
             if (userId) {
 
-                User.findById(userId).then(cookie => {
-                    res.cookie('jwt', cookie, {
-                        httpOnly: true
-                    });
+                User.findById(userId).then(user => {
+                    console.log('user: ' + user);
+
+                    let cookie = jwt.sign({
+                        user: user
+                    }, 'megaGeheimSecret');
                     res.status(200).json({
                         'cookie': cookie
                     });
