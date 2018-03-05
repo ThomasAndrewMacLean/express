@@ -97,7 +97,7 @@ io.on('connection', (socket) => {
         console.log(a);
 
         io.in(a.room).emit('return-private', {
-            'jkl': a.data
+            'move': a.data
         });
     });
     socket.on('subscribe', function (data) {
