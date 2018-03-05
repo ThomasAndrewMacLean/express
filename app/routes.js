@@ -41,6 +41,8 @@ module.exports = function (app, passport) {
         }, 'megaGeheimSecret');
         console.log('user: ' + req.user);
         console.log('jwt sign: ' + cookie);
+        console.log('req: ' + req);
+
 
         res.cookie('jwt', cookie, {
             httpOnly: true
