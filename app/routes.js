@@ -1,24 +1,43 @@
 const jwt = require('jsonwebtoken');
 const User = require('./models/user');
+const Game = require('./models/game');
 
 module.exports = function (app, passport) {
 
-    let checkCookie = (cookie, res) => {
+    let getUserNameFromCookie = (cookie, res) => {
         jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
             if (err) {
                 res.status(400).json(cookie);
             } else {
-                console.log('succes');
-                res.status(200).json({
-                    user: data.user.local.email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
-                });
+                return data.user.local.email;
             }
         });
     };
 
+
+    app.post('/newGame', (req, res) => {
+        let cookie = req.body.cookie;
+        //   console.log('user: ' + cookie);
+        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                res.status(400).json(cookie);
+            } else {
+                let pl = data.user.local.email;
+                let game = new Game();
+                game.playerWhite = pl;
+
+                game.save().then(g => {
+                    res.status(200).json({
+                        'game': g
+                    });
+                });
+            }
+        });
+    });
+
     app.get('/testLogin', (req, res) => {
         const cookie = req.cookies.jwt;
-        checkCookie(cookie, res);
+        getUserNameFromCookie(cookie, res);
 
     });
 
@@ -33,7 +52,10 @@ module.exports = function (app, passport) {
 
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8081');
-        checkCookie(cookie, res);
+        let email = getUserNameFromCookie(cookie, res);
+        res.status(200).json({
+            user: email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
+        });
     });
 
 

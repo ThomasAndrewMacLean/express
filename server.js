@@ -43,11 +43,23 @@ app.use(function (req, res, next) {
 require('./app/routes.js')(app, passport);
 
 const User = require('./app/models/user');
-
 const Message = require('./app/models/msg');
+const Game = require('./app/models/game');
 
 app.copy('/', (req, res) => {
     User.find().exec()
+        .then(docs => {
+            res.status(200).json(docs);
+        }).catch(err => {
+            res.status(500).json({
+                'message': err
+            });
+        });
+});
+
+
+app.copy('/game', (req, res) => {
+    Game.find().exec()
         .then(docs => {
             res.status(200).json(docs);
         }).catch(err => {
