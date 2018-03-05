@@ -35,7 +35,6 @@ module.exports = function (app, passport) {
     });
 
 
-
     app.get('/', (req, res) => {
         let cookie = jwt.sign({
             user: req.user
