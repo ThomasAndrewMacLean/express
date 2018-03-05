@@ -39,6 +39,8 @@ module.exports = function (app, passport) {
         let cookie = jwt.sign({
             user: req.user
         }, 'megaGeheimSecret');
+        console.log('jwt sign: ' + cookie);
+
         res.cookie('jwt', cookie, {
             httpOnly: true
         });
