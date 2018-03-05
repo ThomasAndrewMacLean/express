@@ -92,6 +92,21 @@ io.on('connection', (socket) => {
     console.log('new user');
     socket.broadcast.emit('hi');
 
+
+    socket.on('private', (a) => {
+        console.log(a);
+
+        io.in(a.room).emit('return-private', {
+            'jkl': a.data
+        });
+    });
+    socket.on('subscribe', function (data) {
+        socket.join(data.room);
+    });
+
+    socket.on('unsubscribe', function (data) {
+        socket.leave(data.room);
+    });
     socket.on('send-msg', (msgData) => {
         console.log(msgData);
 
