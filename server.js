@@ -90,7 +90,9 @@ io.on('connection', (socket) => {
 
             } else {
 
-                console.log('data: ' + data);
+                // console.log('data: ');
+                // console.log(data);
+
 
                 let user = data.user.local.email;
                 // console.log(user);
@@ -98,11 +100,13 @@ io.on('connection', (socket) => {
                 let msg = new Message();
                 msg.user = 'user';
                 msg.message = msgData.msg;
-                msg.save();
+                msg.save().then(m => {
 
-                io.emit('return', {
-                    'msg': msgData.msg,
-                    'user': user
+                    io.emit('return', {
+                        'msg': msgData.msg,
+                        'user': user,
+                        'timeStamp': m.createdAt
+                    });
                 });
 
             }
