@@ -39,6 +39,7 @@ module.exports = function (app, passport) {
 
     app.get('/', (req, res) => {
 
+
         if (req.user) {
             let cookie = jwt.sign({
                 user: req.user
@@ -53,15 +54,28 @@ module.exports = function (app, passport) {
                 'cookie': cookie
             });
         } else {
-            console.log(req.sessionStore);
-            // User.findById(req._passport.session.user).then(cookie => {
-            //     res.cookie('jwt', cookie, {
-            //         httpOnly: true
-            //     });
-            //     res.status(200).json({
-            //         'cookie': cookie
-            //     });
-            // });
+            console.log('no session IOS :(');
+            let userId;
+            for (const sess in req.sessionStore.sessions) {
+                if (req.sessionStore.sessions[sess].includes('passport'))
+                    userId = JSON.parse(req.sessionStore.sessions[sess]).passport.user;
+            }
+            console.log('cookie: ' + userId);
+            if (userId) {
+
+                User.findById(userId).then(cookie => {
+                    res.cookie('jwt', cookie, {
+                        httpOnly: true
+                    });
+                    res.status(200).json({
+                        'cookie': cookie
+                    });
+                });
+            } else {
+                res.status(404).json({
+                    'err': 'no user found'
+                });
+            }
         }
 
 
