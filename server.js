@@ -42,6 +42,7 @@ app.use(function (req, res, next) {
 require('./app/routes.js')(app, passport);
 
 const User = require('./app/models/user');
+
 const Message = require('./app/models/msg');
 
 app.copy('/', (req, res) => {
