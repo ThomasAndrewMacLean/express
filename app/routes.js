@@ -53,7 +53,7 @@ module.exports = function (app, passport) {
                 'cookie': cookie
             });
         } else {
-            console.log(req._passport);
+            console.log(req.sessionStore);
             // User.findById(req._passport.session.user).then(cookie => {
             //     res.cookie('jwt', cookie, {
             //         httpOnly: true
