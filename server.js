@@ -33,6 +33,7 @@ app.use(flash());
 app.use(corse({
     credentials: true
 }));
+
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8082');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Authorization, Range, Content-Type, Accept');
@@ -89,12 +90,13 @@ io.on('connection', (socket) => {
 
             } else {
 
+                console.log(data);
 
-                let user = data.user.local.email;
-                console.log(user);
+                //  let user = data.user.local.email;
+                // console.log(user);
 
                 let msg = new Message();
-                msg.user = user;
+                msg.user = 'user';
                 msg.message = msgData.msg;
                 msg.save();
 
