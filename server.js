@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
 
                 io.emit('return', {
                     'msg': msgData.msg,
-                    'user': user
+                    'user': 'user'
                 });
 
             }
