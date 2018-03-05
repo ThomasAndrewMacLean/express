@@ -66,8 +66,6 @@ module.exports = (passport) => {
                 return done(null, false, req.flash('err', 'No user found.'));
             if (!user.validPassword(password))
                 return done(null, false, req.flash('err', 'Oops! Wrong password.'));
-            console.log('user passport: ' +
-                user);
 
             return done(null, user);
         });

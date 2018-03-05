@@ -30,7 +30,7 @@ module.exports = function (app, passport) {
         // console.log(req.body);
 
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-        res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8082');
+        res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8081');
         checkCookie(cookie, res);
     });
 
@@ -41,7 +41,7 @@ module.exports = function (app, passport) {
         }, 'megaGeheimSecret');
         console.log('user: ' + req.user);
         console.log('jwt sign: ' + cookie);
-        console.log('req: ' + req);
+        console.log(req);
 
 
         res.cookie('jwt', cookie, {
