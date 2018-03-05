@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const User = require('./models/user');
+
 module.exports = function (app, passport) {
 
     let checkCookie = (cookie, res) => {
@@ -36,20 +38,32 @@ module.exports = function (app, passport) {
 
 
     app.get('/', (req, res) => {
-        let cookie = jwt.sign({
-            user: req.user
-        }, 'megaGeheimSecret');
-        console.log('user: ' + req.user);
-        console.log('jwt sign: ' + cookie);
-        console.log(req.body);
+
+        if (req.user) {
+            let cookie = jwt.sign({
+                user: req.user
+            }, 'megaGeheimSecret');
+            console.log('user: ' + req.user);
+            console.log('jwt sign: ' + cookie);
+            console.log(req._passport.session.user);
+            res.cookie('jwt', cookie, {
+                httpOnly: true
+            });
+            res.status(200).json({
+                'cookie': cookie
+            });
+        } else {
+            User.findById(req._passport.session.user).then(cookie => {
+                res.cookie('jwt', cookie, {
+                    httpOnly: true
+                });
+                res.status(200).json({
+                    'cookie': cookie
+                });
+            });
+        }
 
 
-        res.cookie('jwt', cookie, {
-            httpOnly: true
-        });
-        res.status(200).json({
-            'cookie': cookie
-        });
     });
 
     app.get('/deleteCookie', (req, res) => {
