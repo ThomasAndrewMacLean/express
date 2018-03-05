@@ -90,9 +90,9 @@ io.on('connection', (socket) => {
 
             } else {
 
-                console.log(data);
+                console.log('data: ' + data);
 
-                //  let user = data.user.local.email;
+                let user = data.user.local.email;
                 // console.log(user);
 
                 let msg = new Message();
@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
 
                 io.emit('return', {
                     'msg': msgData.msg,
-                    'user': 'user'
+                    'user': user
                 });
 
             }

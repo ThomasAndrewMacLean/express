@@ -41,10 +41,14 @@ module.exports = function (app, passport) {
 
 
         if (req.user) {
+
+            console.log('user1: ' + req.user);
+
+
             let cookie = jwt.sign({
                 user: req.user
             }, 'megaGeheimSecret');
-            console.log('user: ' + req.user);
+            // console.log('user: ' + req.user);
             console.log('jwt sign: ' + cookie);
             console.log(req._passport.session.user);
             res.cookie('jwt', cookie, {
