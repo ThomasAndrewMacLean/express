@@ -35,6 +35,78 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.post('/getOpenGames', (req, res) => {
+        let cookie = req.body.cookie;
+        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                res.status(400).json(cookie);
+            } else {
+                const user = data.user.local.email;
+                Game.find({
+                    $or: [{
+                        'playerWhite': user
+                    }, {
+                        'playerBlack': user
+                    }]
+                }).exec().then(g => {
+                    return res.send(g.map(p => {
+
+
+                        return {
+                            '_id': p._id,
+                            'playerWhite': p.playerWhite,
+                            'playerBlack': p.playerBlack
+                        };
+
+                    }).filter(x => {
+                        return x.playerBlack;
+                    }));
+                });
+            }
+        });
+    });
+
+    app.post('/addPlayer', (req, res) => {
+        let cookie = req.body.cookie;
+        let gameId = req.body.gameId;
+        //   console.log('user: ' + cookie);
+        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                res.status(400).json(cookie);
+            } else {
+                console.log(data.user.local.email);
+
+                Game.findById(gameId).then(g => {
+                    if (!g.playerBlack && g.playerWhite !== data.user.local.email) {
+                        Game.findByIdAndUpdate(gameId, {
+                            playerBlack: data.user.local.email
+                        }, {
+                            new: true
+                        },
+
+                            // the callback function
+                        (err, todo) => {
+                            // Handle any possible database errors
+                            if (err) return res.status(500).send(err);
+                            console.log('update???');
+
+                            return res.send(todo);
+                        });
+                    } else {
+                        if (g.playerBlack === data.user.local.email || g.playerWhite === data.user.local.email) {
+                            return res.send(g);
+                        } else {
+
+                            return res.send('playerblack is already filled');
+                        }
+                    }
+                });
+
+
+            }
+        });
+    });
+
     app.get('/testLogin', (req, res) => {
         const cookie = req.cookies.jwt;
         getUserNameFromCookie(cookie, res);

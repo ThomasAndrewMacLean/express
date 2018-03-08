@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
                 // console.log(user);
 
                 let msg = new Message();
-                msg.user = 'user';
+                msg.user = user;
                 msg.message = msgData.msg;
                 msg.save().then(m => {
 
