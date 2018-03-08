@@ -6,10 +6,14 @@ const Message = require('./models/msg');
 module.exports = function (app, passport) {
 
     let getUserNameFromCookie = (cookie, res) => {
-        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+        return jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
             if (err) {
                 res.status(400).json(cookie);
             } else {
+                console.log('data: ');
+                console.log(data);
+
+
                 return data.user.local.email;
             }
         });
@@ -105,7 +109,9 @@ module.exports = function (app, passport) {
     });
     app.post('/getMessages', (req, res) => {
         let cookie = req.body.cookie;
-        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+        console.log(req.body);
+
+        jwt.verify(cookie, 'megaGeheimSecret', (err) => {
             if (err) {
                 res.status(400).json(cookie);
             } else {
@@ -118,12 +124,17 @@ module.exports = function (app, passport) {
     });
     app.get('/testLogin', (req, res) => {
         const cookie = req.cookies.jwt;
-        getUserNameFromCookie(cookie, res);
+        console.log('cookie : ' + cookie);
 
+        let email = getUserNameFromCookie(cookie, res);
+        console.log('email ' + email);
+
+        res.status(200).json({
+            user: email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
+        });
     });
     app.post('/testLoginIOS', (req, res) => {
         const cookie = req.body.cookie;
-        // console.log(req.body);
 
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8081');
@@ -137,15 +148,12 @@ module.exports = function (app, passport) {
 
         if (req.user) {
 
-            console.log('user1: ' + req.user);
 
 
             let cookie = jwt.sign({
                 user: req.user
             }, 'megaGeheimSecret');
-            // console.log('user: ' + req.user);
-            console.log('jwt sign: ' + cookie);
-            console.log(req._passport.session.user);
+
             res.cookie('jwt', cookie, {
                 httpOnly: true
             });
