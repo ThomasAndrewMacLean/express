@@ -76,19 +76,19 @@ module.exports = function (app, passport) {
                 Game.findById(gameId).then(g => {
                     if (!g.playerBlack && g.playerWhite !== data.user.local.email) {
                         Game.findByIdAndUpdate(gameId, {
-                                playerBlack: data.user.local.email
-                            }, {
-                                new: true
-                            },
+                            playerBlack: data.user.local.email
+                        }, {
+                            new: true
+                        },
 
                             // the callback function
-                            (err, todo) => {
-                                // Handle any possible database errors
-                                if (err) return res.status(500).send(err);
-                                console.log('update???');
+                        (err, todo) => {
+                            // Handle any possible database errors
+                            if (err) return res.status(500).send(err);
+                            console.log('update???');
 
-                                return res.send(todo);
-                            });
+                            return res.send(todo);
+                        });
                     } else {
                         if (g.playerBlack === data.user.local.email || g.playerWhite === data.user.local.email) {
                             return res.send(g);
