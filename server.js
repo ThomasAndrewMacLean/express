@@ -68,6 +68,10 @@ app.copy('/game', (req, res) => {
             });
         });
 });
+app.delete('/game', (req, res) => {
+    Game.find().remove({}).exec();
+    res.status(200).json('del');
+});
 
 app.copy('/msg', (req, res) => {
     Message.find().exec()
@@ -119,12 +123,14 @@ io.on('connection', (socket) => {
 
             io.in(x.playerWhite).emit('return-private', {
                 'board': lastMove,
-                'gameId': gameId
+                'gameId': gameId,
+                'opponent': x.playerBlack
             });
             if (x.playerBlack) {
                 io.in(x.playerBlack).emit('return-private', {
                     'board': lastMove,
-                    'gameId': gameId
+                    'gameId': gameId,
+                    'opponent': x.playerWhite
                 });
             }
         });
