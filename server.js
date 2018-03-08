@@ -90,21 +90,58 @@ var io = require('socket.io')(server);
 //io.origins('*:*');
 io.on('connection', (socket) => {
     console.log('new user');
+    // console.log(socket);
+
     socket.broadcast.emit('hi');
 
 
     socket.on('private', (a) => {
-        console.log(a);
+        //  console.log(a);
+        const gameId = a.room;
+        Game.findById(gameId).exec().then(x => {
+            console.log(x);
 
-        io.in(a.room).emit('return-private', {
-            'move': a.data
+            let from = a.data.split(':')[0];
+            let to = a.data.split(':')[1];
+
+            let lastMove = JSON.parse(JSON.stringify(x.moves.slice(-1)[0]));
+
+            let f = lastMove[from];
+            lastMove[to] = f;
+            lastMove[from] = '';
+            x.moves.push(lastMove);
+
+            Game.findByIdAndUpdate(gameId, {
+                'moves': x.moves
+            }).exec();
+            console.log(x.playerWhite);
+            console.log(x.playerBlack);
+
+            io.in(x.playerWhite).emit('return-private', {
+                'board': lastMove,
+                'gameId': gameId
+            });
+            if (x.playerBlack) {
+                io.in(x.playerBlack).emit('return-private', {
+                    'board': lastMove,
+                    'gameId': gameId
+                });
+            }
         });
+
+
     });
     socket.on('subscribe', function (data) {
+        console.log(data.room);
+        console.log('subscribed');
+
         socket.join(data.room);
     });
 
     socket.on('unsubscribe', function (data) {
+        console.log(data);
+        console.log('unscub');
+
         socket.leave(data.room);
     });
     socket.on('send-msg', (msgData) => {

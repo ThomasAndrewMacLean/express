@@ -1,7 +1,10 @@
+//@ts-check
+
 const jwt = require('jsonwebtoken');
 const User = require('./models/user');
 const Game = require('./models/game');
 const Message = require('./models/msg');
+const gameHelper = require('./gameHelper');
 
 module.exports = function (app, passport) {
 
@@ -28,6 +31,8 @@ module.exports = function (app, passport) {
                 let pl = data.user.local.email;
                 let game = new Game();
                 game.playerWhite = pl;
+                //   game.moves.push(Game.pieces[0]);
+                game.moves.push(gameHelper.getNewBoard());
 
                 game.save().then(g => {
                     res.status(200).json({
@@ -86,16 +91,16 @@ module.exports = function (app, passport) {
                         },
 
                             // the callback function
-                        (err, todo) => {
+                        (err, game) => {
                             // Handle any possible database errors
                             if (err) return res.status(500).send(err);
                             console.log('update???');
 
-                            return res.send(todo);
+                            return res.status(200).json(game);
                         });
                     } else {
                         if (g.playerBlack === data.user.local.email || g.playerWhite === data.user.local.email) {
-                            return res.send(g);
+                            return res.status(200).json(g);
                         } else {
 
                             return res.send('playerblack is already filled');
@@ -109,8 +114,7 @@ module.exports = function (app, passport) {
     });
     app.post('/getMessages', (req, res) => {
         let cookie = req.body.cookie;
-        console.log(req.body);
-
+        //
         jwt.verify(cookie, 'megaGeheimSecret', (err) => {
             if (err) {
                 res.status(400).json(cookie);
@@ -124,11 +128,7 @@ module.exports = function (app, passport) {
     });
     app.get('/testLogin', (req, res) => {
         const cookie = req.cookies.jwt;
-        console.log('cookie : ' + cookie);
-
         let email = getUserNameFromCookie(cookie, res);
-        console.log('email ' + email);
-
         res.status(200).json({
             user: email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
         });
