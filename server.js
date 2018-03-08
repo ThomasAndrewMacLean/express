@@ -130,9 +130,9 @@ io.on('connection', (socket) => {
                 msg.save().then(m => {
 
                     io.emit('return', {
-                        'msg': msgData.msg,
+                        'message': msgData.msg,
                         'user': user,
-                        'timeStamp': m.createdAt
+                        'createdAt': m.createdAt
                     });
                 });
 

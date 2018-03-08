@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('./models/user');
 const Game = require('./models/game');
+const Message = require('./models/msg');
 
 module.exports = function (app, passport) {
 
@@ -13,8 +14,6 @@ module.exports = function (app, passport) {
             }
         });
     };
-
-
     app.post('/newGame', (req, res) => {
         let cookie = req.body.cookie;
         //   console.log('user: ' + cookie);
@@ -34,7 +33,6 @@ module.exports = function (app, passport) {
             }
         });
     });
-
     app.post('/getOpenGames', (req, res) => {
         let cookie = req.body.cookie;
         jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
@@ -65,7 +63,6 @@ module.exports = function (app, passport) {
             }
         });
     });
-
     app.post('/addPlayer', (req, res) => {
         let cookie = req.body.cookie;
         let gameId = req.body.gameId;
@@ -79,19 +76,19 @@ module.exports = function (app, passport) {
                 Game.findById(gameId).then(g => {
                     if (!g.playerBlack && g.playerWhite !== data.user.local.email) {
                         Game.findByIdAndUpdate(gameId, {
-                            playerBlack: data.user.local.email
-                        }, {
-                            new: true
-                        },
+                                playerBlack: data.user.local.email
+                            }, {
+                                new: true
+                            },
 
                             // the callback function
-                        (err, todo) => {
-                            // Handle any possible database errors
-                            if (err) return res.status(500).send(err);
-                            console.log('update???');
+                            (err, todo) => {
+                                // Handle any possible database errors
+                                if (err) return res.status(500).send(err);
+                                console.log('update???');
 
-                            return res.send(todo);
-                        });
+                                return res.send(todo);
+                            });
                     } else {
                         if (g.playerBlack === data.user.local.email || g.playerWhite === data.user.local.email) {
                             return res.send(g);
@@ -106,18 +103,24 @@ module.exports = function (app, passport) {
             }
         });
     });
+    app.post('/getMessages', (req, res) => {
+        let cookie = req.body.cookie;
+        jwt.verify(cookie, 'megaGeheimSecret', (err, data) => {
+            if (err) {
+                res.status(400).json(cookie);
+            } else {
+                Message.find().sort('-createdAt').limit(10).exec().then(m => {
 
+                    res.status(200).json(m);
+                });
+            }
+        });
+    });
     app.get('/testLogin', (req, res) => {
         const cookie = req.cookies.jwt;
         getUserNameFromCookie(cookie, res);
 
     });
-
-    // app.options('/*', (req, res) => {
-    //     console.log(req.body);
-    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    //     res.header('Access-Control-Allow-Origin', process.env.ORIGIN || 'http://localhost:8082');
-    // });
     app.post('/testLoginIOS', (req, res) => {
         const cookie = req.body.cookie;
         // console.log(req.body);
@@ -129,8 +132,6 @@ module.exports = function (app, passport) {
             user: email // TODO: later bij uitbreiding nagaan ook bij facebook/google...
         });
     });
-
-
     app.get('/', (req, res) => {
 
 
@@ -180,14 +181,12 @@ module.exports = function (app, passport) {
 
 
     });
-
     app.get('/deleteCookie', (req, res) => {
         // res.header('Access-Control-Allow-Origin', 'http://localhost:8081');
         res.clearCookie('jwt');
         res.status(200).json('delete');
 
     });
-
     app.get('/error', (req, res) => {
 
         // console.log(req.flash());
@@ -196,7 +195,6 @@ module.exports = function (app, passport) {
             'err': req.flash('err')[0]
         });
     });
-
     app.get('/userinfo', hasToken, (req, res) => {
         jwt.verify(req.token, 'megaGeheimSecret', (err, data) => {
             if (err) {
@@ -216,8 +214,6 @@ module.exports = function (app, passport) {
         });
 
     });
-
-
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/',
         failureRedirect: '/error',
