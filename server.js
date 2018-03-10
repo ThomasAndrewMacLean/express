@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('hi');
 
 
-    socket.on('private', (a) => {
+    socket.on('sendMove', (a) => {
         //  console.log(a);
         const gameId = a.room;
         Game.findById(gameId).exec().then(x => {
@@ -124,13 +124,16 @@ io.on('connection', (socket) => {
             io.in(x.playerWhite).emit('return-private', {
                 'board': lastMove,
                 'gameId': gameId,
-                'opponent': x.playerBlack
+                'opponent': x.playerBlack,
+                'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite
             });
             if (x.playerBlack) {
                 io.in(x.playerBlack).emit('return-private', {
                     'board': lastMove,
                     'gameId': gameId,
-                    'opponent': x.playerWhite
+                    'opponent': x.playerWhite,
+                    'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite
+
                 });
             }
         });
