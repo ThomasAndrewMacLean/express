@@ -46,7 +46,7 @@ const User = require('./app/models/user');
 const Message = require('./app/models/msg');
 const Game = require('./app/models/game');
 
-app.copy('/', (req, res) => {
+app.patch('/', (req, res) => {
     User.find().exec()
         .then(docs => {
             res.status(200).json(docs);
@@ -58,7 +58,7 @@ app.copy('/', (req, res) => {
 });
 
 
-app.copy('/game', (req, res) => {
+app.patch('/game', (req, res) => {
     Game.find().exec()
         .then(docs => {
             res.status(200).json(docs);
@@ -73,7 +73,7 @@ app.delete('/game', (req, res) => {
     res.status(200).json('del');
 });
 
-app.copy('/msg', (req, res) => {
+app.patch('/msg', (req, res) => {
     Message.find().exec()
         .then(docs => {
             res.status(200).json(docs);
