@@ -125,14 +125,16 @@ io.on('connection', (socket) => {
                 'board': lastMove,
                 'gameId': gameId,
                 'opponent': x.playerBlack,
-                'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite
+                'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite,
+                'move': a.data
             });
             if (x.playerBlack) {
                 io.in(x.playerBlack).emit('return-private', {
                     'board': lastMove,
                     'gameId': gameId,
                     'opponent': x.playerWhite,
-                    'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite
+                    'nextPlayer': x.moves.length % 2 === 0 ? x.playerBlack : x.playerWhite,
+                    'move': a.data
 
                 });
             }
