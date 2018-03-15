@@ -85,19 +85,19 @@ module.exports = function (app, passport) {
                 Game.findById(gameId).then(g => {
                     if (!g.playerBlack && g.playerWhite !== data.user.local.email) {
                         Game.findByIdAndUpdate(gameId, {
-                            playerBlack: data.user.local.email
-                        }, {
-                            new: true
-                        },
+                                playerBlack: data.user.local.email
+                            }, {
+                                new: true
+                            },
 
                             // the callback function
-                        (err, game) => {
-                            // Handle any possible database errors
-                            if (err) return res.status(500).send(err);
-                            console.log('update???');
+                            (err, game) => {
+                                // Handle any possible database errors
+                                if (err) return res.status(500).send(err);
+                                console.log('update???');
 
-                            return res.status(200).json(game);
-                        });
+                                return res.status(200).json(game);
+                            });
                     } else {
                         if (g.playerBlack === data.user.local.email || g.playerWhite === data.user.local.email) {
                             return res.status(200).json(g);
@@ -235,7 +235,7 @@ module.exports = function (app, passport) {
     app.post('/particle', (req, res) => {
         console.log(req.body);
         res.status(200).json({
-            'hello': 'jowkes'
+            'hello': req.body.data
         });
     });
 };
